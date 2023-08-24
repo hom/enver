@@ -15,6 +15,8 @@ toolchain = ["x86_64-unknown-linux-gnu", "x86_64-apple-darwin"]
 pre-build = [
     "apt-get install xz-utils",
     "curl -L https://github.com/roblabla/MacOSX-SDKs/releases/download/13.3/MacOSX13.3.sdk.tar.xz | tar xJ",
+    "pwd",
+    "ls -al",
     "export SDKROOT=$(pwd)/MacOSX13.3.sdk/",
 ]
 
@@ -25,5 +27,7 @@ toolchain = ["aarch64-unknown-linux-gnu", "aarch64-apple-darwin"]
 pre-build = [
     "apt-get install xz-utils",
     "curl -L https://github.com/roblabla/MacOSX-SDKs/releases/download/13.3/MacOSX13.3.sdk.tar.xz | tar xJ",
+    "pwd",
+    "ls -al",
     "export SDKROOT=$(pwd)/MacOSX13.3.sdk/",
 ]
