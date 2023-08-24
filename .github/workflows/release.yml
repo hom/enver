@@ -50,7 +50,9 @@ jobs:
       # Version
       - name: Get the release version from the tag
         shell: bash
-        run: echo "VERSION=$(awk -F'"' '/version/ {print $2; exit}' Cargo.toml)" >> $GITHUB_ENV
+        run: |
+          echo "VERSION=$(awk -F'"' '/version/ {print $2; exit}' Cargo.toml)" >> $GITHUB_ENV
+          echo "BINARY=$(awk -F'"' '/name/ {print $2; exit}' Cargo.toml)" >> $GITHUB_ENV
       # Check output
       - name: Check output
         run: tree -L 4 target
@@ -59,20 +61,17 @@ jobs:
         shell: bash
         run: |
           # the name of binary
-          binary_name="transform"
+          binary=${{ env.BINARY }}
 
-          # dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
-          dirname="$binary_name-${{ matrix.target }}"
+          dirname="$binary-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            mv "target/release/$binary_name.exe" "$dirname"
-            mv ".env" "$dirname"
+          if [ "${{ matrix.target }}" = "x86_64-pc-windows-gnu" ]; then
+            mv "target/release/$binary.exe" "$dirname"
           else
-            mv "target/release/$binary_name" "$dirname"
-            mv ".env" "$dirname"
+            mv "target/release/$binary" "$dirname"
           fi
 
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+          if [ "${{ matrix.target }}" = "x86_64-pc-windows-gnu" ]; then
             7z a "$dirname.zip" "$dirname"
             echo "ASSET=$dirname.zip" >> $GITHUB_ENV
           else
