@@ -20,10 +20,12 @@ jobs:
             archive: zip
           - target: x86_64-unknown-linux-gnu
             archive: tar.gz
+          - target: aarch64-unknown-linux-gnu
+            archive: zip
           - target: x86_64-apple-darwin
             archive: zip
-          # - target: aarch64-apple-darwin
-          #   archive: zip
+          - target: aarch64-apple-darwin
+            archive: zip
     steps:
       # Checkout repository
       - uses: actions/checkout@master
