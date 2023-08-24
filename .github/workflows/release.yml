@@ -66,9 +66,9 @@ jobs:
           dirname="$binary-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
           if [ "${{ matrix.target }}" = "x86_64-pc-windows-gnu" ]; then
-            mv "target/release/$binary.exe" "$dirname"
+            mv "target/${{ matrix.target }}/release/$binary.exe" "$dirname"
           else
-            mv "target/release/$binary" "$dirname"
+            mv "target/${{ matrix.target }}/release/$binary" "$dirname"
           fi
 
           if [ "${{ matrix.target }}" = "x86_64-pc-windows-gnu" ]; then
