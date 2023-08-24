@@ -2,32 +2,32 @@
 default-target = "x86_64-unknown-linux-gnu"
 pre-build = ["apt-get update"]              # can also be the path to a file to run
 
-[build.env]
-passthrough = [
-    "CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER=rust-lld",
-    "CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=rust-lld",
-]
-
 # 编译 x86_64-apple-darwin
 [target.x86_64-apple-darwin]
 image = "ghcr.io/cross-rs/x86_64-unknown-linux-gnu:edge"
 toolchain = ["x86_64-unknown-linux-gnu", "x86_64-apple-darwin"]
+env.passthrough = [
+    "CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER=rust-lld",
+    "SDKROOT=/MacOSX13.3.sdk/",
+]
 pre-build = [
     "apt-get install xz-utils",
     "curl -L https://github.com/roblabla/MacOSX-SDKs/releases/download/13.3/MacOSX13.3.sdk.tar.xz | tar xJ",
     "pwd",
     "ls -al",
-    "export SDKROOT=$(pwd)/MacOSX13.3.sdk/",
 ]
 
 # 编译 aarch64-apple-darwin
 [target.aarch64-apple-darwin]
 image = "ghcr.io/cross-rs/aarch64-unknown-linux-gnu:edge"
 toolchain = ["aarch64-unknown-linux-gnu", "aarch64-apple-darwin"]
+env.passthrough = [
+    "CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=rust-lld",
+    "SDKROOT=/MacOSX13.3.sdk/",
+]
 pre-build = [
     "apt-get install xz-utils",
     "curl -L https://github.com/roblabla/MacOSX-SDKs/releases/download/13.3/MacOSX13.3.sdk.tar.xz | tar xJ",
     "pwd",
     "ls -al",
-    "export SDKROOT=$(pwd)/MacOSX13.3.sdk/",
 ]
