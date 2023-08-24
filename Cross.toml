@@ -1,5 +1,3 @@
 [build]
-xargo = true
-build-std = false
 default-target = "x86_64-unknown-linux-gnu"
 pre-build = ["apt-get update"] # can also be the path to a file to run
