@@ -1,0 +1,101 @@
+# .github/workflows/build.yml
+# 流水线
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - release
+  release:
+    types:
+      - created
+
+# 全局环境变量
+env:
+  CARGO_TERM_COLOR: always
+
+# 作业
+jobs:
+  release:
+    name: release ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-pc-windows-gnu
+            archive: zip
+          - target: x86_64-unknown-linux-gnu
+            archive: tar.gz
+          - target: aarch64-unknown-linux-gnu
+            archive: zip
+          - target: x86_64-apple-darwin
+            archive: zip
+          - target: aarch64-apple-darwin
+            archive: zip
+    steps:
+      # Checkout repository
+      - uses: actions/checkout@master
+      # Test
+      - name: Test
+        run: rustup target list --installed
+      - name: Install dependencies
+        run: |
+          cargo install cross
+      # Build
+      - name: Compile and release
+        id: compile
+        run: cross build --release --verbose --target ${{ matrix.target }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Version
+      - name: Get the release version from the tag
+        shell: bash
+        run: echo "VERSION=$(awk -F'"' '/version/ {print $2; exit}' Cargo.toml)" >> $GITHUB_ENV
+      # Check output
+      - name: Check output
+        run: tree -L 4 target
+      # Archive
+      - name: Build archive
+        shell: bash
+        run: |
+          # the name of binary
+          binary_name="transform"
+
+          # dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
+          dirname="$binary_name-${{ matrix.target }}"
+          mkdir "$dirname"
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            mv "target/release/$binary_name.exe" "$dirname"
+            mv ".env" "$dirname"
+          else
+            mv "target/release/$binary_name" "$dirname"
+            mv ".env" "$dirname"
+          fi
+
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            7z a "$dirname.zip" "$dirname"
+            echo "ASSET=$dirname.zip" >> $GITHUB_ENV
+          else
+            tar -czf "$dirname.tar.gz" "$dirname"
+            echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
+          fi
+      # Upload
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Binary
+          path: |
+            ${{ env.ASSET }}
+      # Release
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.ASSET }}
+          tag_name: ${{ env.VERSION }}
+          body: |
+            ## Changelog
+            $(git log --pretty=format:"* %s" $(git describe --tags --abbrev=0)..HEAD)
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

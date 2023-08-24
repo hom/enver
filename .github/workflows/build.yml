@@ -16,12 +16,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - target: x86_64-pc-windows-gnu
-          #   archive: zip
-          # - target: x86_64-unknown-linux-gnu
-          #   archive: tar.gz
-          # - target: aarch64-unknown-linux-gnu
-          #   archive: zip
+          - target: x86_64-pc-windows-gnu
+            archive: zip
+          - target: x86_64-unknown-linux-gnu
+            archive: tar.gz
+          - target: aarch64-unknown-linux-gnu
+            archive: zip
           - target: x86_64-apple-darwin
             archive: zip
           - target: aarch64-apple-darwin
@@ -48,35 +48,3 @@ jobs:
       # Check output
       - name: Check output
         run: tree -L 4 target
-      # Archive
-      # - name: Build archive
-      #   shell: bash
-      #   run: |
-      #     # the name of binary
-      #     binary_name="transform"
-
-      #     # dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
-      #     dirname="$binary_name-${{ matrix.target }}"
-      #     mkdir "$dirname"
-      #     if [ "${{ matrix.os }}" = "windows-latest" ]; then
-      #       mv "target/release/$binary_name.exe" "$dirname"
-      #       mv ".env" "$dirname"
-      #     else
-      #       mv "target/release/$binary_name" "$dirname"
-      #       mv ".env" "$dirname"
-      #     fi
-
-      #     if [ "${{ matrix.os }}" = "windows-latest" ]; then
-      #       7z a "$dirname.zip" "$dirname"
-      #       echo "ASSET=$dirname.zip" >> $GITHUB_ENV
-      #     else
-      #       tar -czf "$dirname.tar.gz" "$dirname"
-      #       echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
-      #     fi
-      # Upload
-      # - name: Upload artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: Binary
-      #     path: |
-      #       ${{ env.ASSET }}
