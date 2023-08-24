@@ -4,6 +4,7 @@ pre-build = ["apt-get update"]              # can also be the path to a file to 
 
 # 编译 x86_64-apple-darwin
 [target.x86_64-apple-darwin]
+image = "ubuntu:latest"
 linker = "rust-lld"
 runner = "cargo"
 pre-build = [
@@ -14,6 +15,7 @@ pre-build = [
 
 # 编译 aarch64-apple-darwin
 [target.aarch64-apple-darwin]
+image = "ubuntu:latest"
 linker = "rust-lld"
 runner = "cargo"
 pre-build = [
