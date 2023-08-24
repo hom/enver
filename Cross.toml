@@ -7,6 +7,7 @@ pre-build = ["apt-get update"]              # can also be the path to a file to 
 linker = "rust-lld"
 runner = "cargo"
 pre-build = [
+    "rustup target addd x86_64-apple-darwin",
     "curl -L https://github.com/roblabla/MacOSX-SDKs/releases/download/13.3/MacOSX13.3.sdk.tar.xz | tar xJ",
     "export SDKROOT=$(pwd)/MacOSX13.3.sdk/",
 ]
@@ -16,6 +17,7 @@ pre-build = [
 linker = "rust-lld"
 runner = "cargo"
 pre-build = [
+    "rustup target addd aarch64-apple-darwin",
     "curl -L https://github.com/roblabla/MacOSX-SDKs/releases/download/13.3/MacOSX13.3.sdk.tar.xz | tar xJ",
     "export SDKROOT=$(pwd)/MacOSX13.3.sdk/",
 ]
